@@ -158,7 +158,3 @@ def main():
         pass
     finally:
         hook_man.cancel()
-
-
-if __name__ == "__main__":
-    main()
