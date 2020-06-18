@@ -23,6 +23,7 @@ class KeyEvent:
 
 
 BACKSPACE = KeyEvent(code=SCANCODE_BACKSPACE)
+SPACE = KeyEvent(code=SCANCODE_SPACE)
 
 
 def is_altgr(event: PyxHookKeyEvent):
@@ -132,7 +133,12 @@ class KeyLogger:
 
         self._xkbd.group_num += 1
 
-        for key in [BACKSPACE] * len(self.key_events) + self.key_events:
+        sequence = (
+            [SPACE]
+            + [BACKSPACE] * (len(self.key_events) + 1)
+            + self.key_events
+        )
+        for key in sequence:
             press(self._display, key.code, key.altgr, key.shift)
 
         self._processing = False
