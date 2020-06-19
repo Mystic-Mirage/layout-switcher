@@ -3,19 +3,46 @@ version: '0.1'
 summary: Layout Switcher
 description: |
   Layout Switcher for X11
-base: core20
+base: core18
 confinement: devmode
 
 parts:
   layout-switcher:
+    after:
+      - onboard
     plugin: python
     source: .
+    python-packages:
+      - dataclasses
+
+  onboard:
+    plugin: python
+    source: lp:onboard
+    build-packages:
+      - build-essential
+      - bzrtools
+      - intltool
+      - libcanberra-dev
+      - libdconf-dev
+      - libgirepository1.0-dev
+      - libgtk-3-dev
+      - libhunspell-dev
+      - libudev-dev
+      - libxkbfile-dev
+      - libxtst-dev
     stage-packages:
-      - libx11-6
-      - python3-xlib
+      - libxkbfile1
+    python-packages:
+      - PyGObject
+      - bzr+lp:python-distutils-extra
+    override-build: |
+      cd $SNAPCRAFT_PART_BUILD && bzr patch $SNAPCRAFT_PROJECT_DIR/onboard.patch
+      snapcraftctl build
 
 apps:
   layout-switcher:
     command: bin/layout-switcher
+    extensions:
+      - gnome-3-28
     plugs:
       - x11
