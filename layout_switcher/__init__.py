@@ -1,5 +1,4 @@
 import re
-from dataclasses import dataclass
 from typing import List
 
 from Xlib import X
@@ -9,17 +8,12 @@ from pyxhook import HookManager
 from pyxhook.pyxhook import PyxHookKeyEvent
 from xkbgroup import XKeyboard
 
+from .key_event import KeyEvent
+
 SCANCODE_ALT_GR = 108
 SCANCODE_SHIFT_L = 50
 SCANCODE_BACKSPACE = 22
 SCANCODE_SPACE = 65
-
-
-@dataclass
-class KeyEvent:
-    code: int
-    altgr: bool = False
-    shift: bool = False
 
 
 BACKSPACE = KeyEvent(code=SCANCODE_BACKSPACE)

@@ -9,11 +9,19 @@ confinement: devmode
 parts:
   layout-switcher:
     after:
+      - keysymdef
       - onboard
     plugin: python
     source: .
     python-packages:
       - dataclasses
+
+  keysymdef:
+    plugin: nil
+    stage-packages:
+      - x11proto-dev
+    stage:
+      - usr/include/X11/keysymdef.h
 
   onboard:
     plugin: python
