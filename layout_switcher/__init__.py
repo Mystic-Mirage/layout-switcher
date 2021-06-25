@@ -36,6 +36,10 @@ def is_hotkey(event: PyxHookKeyEvent):
     return event.Key == "Pause"
 
 
+def is_mod(event: PyxHookKeyEvent):
+    return event.Key.startswith(("Alt_", "Control_", "Super_"))
+
+
 def is_not_space(events: List[KeyEvent], event: PyxHookKeyEvent):
     return (
         event.ScanCode != SCANCODE_SPACE
@@ -116,6 +120,8 @@ class KeyLogger:
 
         if is_altgr(event):
             self.altgr = False
+        elif is_mod(event):
+            self.reset()
         elif is_shift(event):
             self.shift = False
 
