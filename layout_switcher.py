@@ -1,22 +1,28 @@
 import re
 import time
+from dataclasses import dataclass
 from typing import List
 
-import Xlib.error
 from Xlib import X
 from Xlib.display import Display
+from Xlib.error import DisplayError
 from Xlib.ext.xtest import fake_input
 from pyxhook import HookManager
 from pyxhook.pyxhook import PyxHookKeyEvent
 from xkbgroup import XKeyboard
 
-from .key_event import KeyEvent
+
+@dataclass
+class KeyEvent:
+    code: int
+    altgr: bool = False
+    shift: bool = False
+
 
 SCANCODE_ALT_GR = 108
 SCANCODE_SHIFT_L = 50
 SCANCODE_BACKSPACE = 22
 SCANCODE_SPACE = 65
-
 
 BACKSPACE = KeyEvent(code=SCANCODE_BACKSPACE)
 SPACE = KeyEvent(code=SCANCODE_SPACE)
@@ -99,7 +105,7 @@ class KeyLogger:
         self.check_window()
 
         if is_hotkey(event):
-            self.press()
+            self.switch()
         elif is_altgr(event):
             self.altgr = True
         elif is_shift(event):
@@ -130,7 +136,7 @@ class KeyLogger:
     def mouse_down(self, _: PyxHookKeyEvent):
         self.reset()
 
-    def press(self):
+    def switch(self):
         self._processing = True
 
         self._xkbd.group_num += 1
@@ -149,10 +155,10 @@ class KeyLogger:
         self.key_events = []
 
 
-def run():
+def _run():
     try:
         hook_man = HookManager()
-    except Xlib.error.DisplayError:
+    except DisplayError:
         return True
 
     hook_man.shiftablechar = re.compile(r"(?!.*)")
@@ -162,6 +168,7 @@ def run():
     hook_man.KeyDown = key_logger.key_down
     hook_man.KeyUp = key_logger.key_up
     hook_man.MouseAllButtonsDown = key_logger.mouse_down
+
     hook_man.start()
 
     try:
@@ -172,6 +179,10 @@ def run():
         hook_man.cancel()
 
 
-def main():
-    while run():
-        time.sleep(1)
+def run():
+    while _run():
+        time.sleep(0.1)
+
+
+if __name__ == "__main__":
+    run()

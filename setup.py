@@ -1,11 +1,16 @@
-from setuptools import find_packages, setup
+from setuptools import setup
 
 setup(
     name="layout_switcher",
     version="0.1",
-    packages=find_packages(),
     entry_points={
-        "console_scripts": ["layout-switcher = layout_switcher:main"]
+        "console_scripts": [
+            "layout-switcher = layout_switcher:run",
+        ]
     },
-    install_requires=["python-xlib", "pyxhook", "xkbgroup"],
+    install_requires=[
+        "python-xlib",
+        "pyxhook",
+        "xkbgroup",
+    ],
 )
