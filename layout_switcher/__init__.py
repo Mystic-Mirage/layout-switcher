@@ -1,6 +1,8 @@
 import re
+import time
 from typing import List
 
+import Xlib.error
 from Xlib import X
 from Xlib.display import Display
 from Xlib.ext.xtest import fake_input
@@ -147,8 +149,12 @@ class KeyLogger:
         self.key_events = []
 
 
-def main():
-    hook_man = HookManager()
+def run():
+    try:
+        hook_man = HookManager()
+    except Xlib.error.DisplayError:
+        return True
+
     hook_man.shiftablechar = re.compile(r"(?!.*)")
 
     key_logger = KeyLogger()
@@ -161,6 +167,11 @@ def main():
     try:
         hook_man.join()
     except KeyboardInterrupt:
-        pass
+        return False
     finally:
         hook_man.cancel()
+
+
+def main():
+    while run():
+        time.sleep(1)
